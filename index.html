@@ -5,103 +5,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Alpha Equity IQ — Learn like a Quant. Trade like a Pro.</title>
   <meta name="description" content="Alpha Equity IQ mentors a selective cohort of disciplined, high-net-worth clients to generate outsized, risk-aware returns using quantitative, technical options strategies across equities, futures, FX, and crypto." />
-  <link rel="icon" type="image/png" href="A_favicon_features_a_shield-shaped_emblem_with_thr.png" />
+  
+  <!-- Favicon and social preview -->
+  <link rel="icon" type="image/png" href="favicon.png" />
   <meta property="og:title" content="Alpha Equity IQ" />
   <meta property="og:description" content="Learn like a Quant. Trade like a Pro." />
-  <meta property="og:image" content="https://jbergeron001.github.io/alphaequityiq.github.io/A_digital_vector_illustration_features_a_shield-sh.png" />
+  <meta property="og:image" content="https://alphaequityiq.com/social.png" />
   <meta property="og:type" content="website" />
+  
   <style>
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background-color: #0b0e14;
-      color: #e9ecf2;
+    :root {
+      --bg: #0b0e14;
+      --panel: #0f141c;
+      --muted: #a8b0bd;
+      --text: #e9ecf2;
+      --gold: #d4af37;
+      --gold-2: #f5c84c;
+      --radius: 16px;
+      --shadow: 0 12px 30px rgba(0,0,0,0.45);
     }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, Segoe UI, Arial, sans-serif; }
+    a { color: var(--gold-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
     header {
-      background: rgba(11,14,20,0.8);
+      background: rgba(11,14,20,0.85);
       border-bottom: 1px solid #1c2230;
-      padding: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 12px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
     header img {
-      height: 40px;
+      height: 42px;
+      width: auto;
     }
-    h1 {
-      color: #d4af37;
+    nav a { margin-left: 18px; color: var(--text); opacity: 0.9; }
+    nav a:hover { color: var(--gold); }
+
+    .container { width: min(1100px, 92%); margin: 0 auto; padding: 50px 0; }
+    h1 { color: var(--gold); margin-bottom: 8px; }
+    h2 { color: var(--gold-2); margin-top: 40px; }
+    .tagline { color: var(--gold-2); font-weight: 600; margin-bottom: 24px; }
+    .muted { color: var(--muted); }
+
+    .btn {
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+      color: #111;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
     }
-    h2 {
-      color: #f5c84c;
-    }
-    a {
-      color: #d4af37;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .container {
-      width: min(1000px, 90%);
-      margin: 0 auto;
-      padding: 40px 0;
-    }
+    .btn:hover { filter: brightness(1.1); }
+
     footer {
       text-align: center;
-      color: #9a9a9a;
+      color: var(--muted);
       border-top: 1px solid #1c2230;
-      padding: 20px 0;
-      margin-top: 40px;
+      padding: 24px 0;
+      margin-top: 60px;
     }
-    .btn {
-      background: linear-gradient(135deg, #f5c84c, #d4af37);
-      color: #111;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .btn:hover {
-      filter: brightness(1.1);
+
+    @media (max-width: 700px) {
+      nav { display: flex; flex-wrap: wrap; justify-content: center; }
+      nav a { margin: 8px; }
+      header img { height: 36px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="ChatGPT Image Oct 12, 2025, 05_21_04 PM.png" alt="Alpha Equity IQ logo">
+    <img src="logo.png" alt="Alpha Equity IQ logo">
     <nav>
-      <a href="#program">Program</a> |
-      <a href="#accept">Who We Accept</a> |
-      <a href="#apply">Apply</a> |
+      <a href="#program">Program</a>
+      <a href="#accept">Who We Accept</a>
+      <a href="#apply">Apply</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <main>
-    <div class="container">
-      <h1>Alpha Equity IQ</h1>
-      <h3><em>Learn like a Quant. Trade like a Pro.</em></h3>
-      <p>Alpha Equity IQ mentors a selective cohort of disciplined, process-driven individuals whose mindset aligns with our edge. We mentor a small, carefully chosen group of clients to generate risk-aware returns using quantitative options strategies across equities, futures, FX, and crypto.</p>
+  <main class="container">
+    <h1>Alpha Equity IQ</h1>
+    <div class="tagline">Learn like a Quant. Trade like a Pro.</div>
+    <p>Alpha Equity IQ is not open to everyone — we deliberately select disciplined, process-driven individuals whose mindset aligns with our edge. We mentor a small, carefully chosen cohort of high-net-worth clients to generate outsized, risk-aware returns using quantitative, technical options strategies across equities, futures, FX, and crypto.</p>
 
-      <h2 id="program">The Program</h2>
-      <p>Our structured curriculum combines quantitative edge, technical context, and execution discipline for elite independent traders.</p>
+    <h2 id="program">The Program</h2>
+    <p class="muted">Our structured curriculum combines quantitative edge, technical context, and execution discipline for elite independent traders. Admission is limited to those who demonstrate the personality and mindset required for disciplined trading.</p>
 
-      <h2 id="accept">Who We Accept</h2>
-      <ul>
-        <li>Individuals who value <strong>process over outcome</strong>.</li>
-        <li>Those with <strong>focus and composure</strong> under pressure.</li>
-        <li>Applicants who maintain <strong>emotional neutrality</strong> when managing risk.</li>
-      </ul>
+    <h2 id="accept">Who We Accept</h2>
+    <ul class="muted">
+      <li>Individuals who value <strong>process over outcome</strong>.</li>
+      <li>Those capable of <strong>patience, focus, and composure</strong> under pressure.</li>
+      <li>Applicants who maintain <strong>emotional neutrality</strong> when managing risk.</li>
+      <li>Professionals seeking to master <strong>quantitative systems and structured decision-making</strong>.</li>
+    </ul>
 
-      <h2 id="apply">Apply to Alpha Equity IQ</h2>
-      <p>If your personality reflects patience and discipline, we invite you to apply for our next training cycle.</p>
-      <a href="mailto:jay@alphaequityiq.com" class="btn">Submit Your Application</a>
+    <h2 id="apply">Apply to Alpha Equity IQ</h2>
+    <p class="muted">We accept a limited number of disciplined applicants who demonstrate patience, focus, and a willingness to follow process. If your personality reflects consistency and composure under pressure, we invite you to apply for our next training cycle.</p>
+    <a href="mailto:jay@alphaequityiq.com" class="btn">Submit Your Application</a>
 
-      <h2 id="contact">Contact</h2>
-      <p>Email: <a href="mailto:jay@alphaequityiq.com">jay@alphaequityiq.com</a><br>
-      Region: Midwest (US)</p>
-    </div>
+    <h2 id="contact">Contact</h2>
+    <p class="muted">Email: <a href="mailto:jay@alphaequityiq.com">jay@alphaequityiq.com</a><br>Region: Midwest (US)</p>
   </main>
 
   <footer>
