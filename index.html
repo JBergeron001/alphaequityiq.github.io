@@ -398,3 +398,188 @@
       </p>
     </div>
   </section>
+  <footer>
+    © <span id="year"></span> Alpha Equity IQ • Learn like a Quant. Trade like a Pro.<br>
+    <span style="display:inline-block;margin-top:10px;color:#a8b0bd;">
+      <em>Alpha Equity IQ does not provide investment advice or specific trade recommendations (stocks, futures, forex, or crypto). We teach process and risk discipline so you can make your own decisions and compound your own alpha.</em>
+    </span><br><br>
+    605 N Michigan Ave, 4th Floor #2<br>
+    Chicago, IL 60611<br>
+    United States
+  </footer>
+
+  <!-- Three.js (WebGL accent) -->
+  <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+
+  <script>
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll progress bar
+    const bar = document.getElementById('progressBar');
+    function updateBar(){
+      const st = window.scrollY || document.documentElement.scrollTop;
+      const dh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (dh ? (st/dh)*100 : 0) + '%';
+    }
+    window.addEventListener('scroll', updateBar, {passive:true}); updateBar();
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    }, {threshold:.08});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // Cursor glow
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', e=>{
+      glow.style.transform = `translate(${e.clientX-150}px, ${e.clientY-150}px)`;
+    }, {passive:true});
+
+    // Hero parallax (crest + Greek backdrop)
+    const crest = document.querySelector('.hero-logo-wrap');
+    const greekBackdrop = document.querySelector('.greek');
+    document.addEventListener('mousemove', e=>{
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      if (crest) crest.style.transform = `translate(${x/4}px, ${y/4}px)`;
+      if (greekBackdrop) greekBackdrop.style.transform = `translate(${x/10}px, ${y/10}px)`;
+    }, {passive:true});
+
+    // Form (FormSubmit AJAX) -> info@alphaequityiq.com
+    const form = document.getElementById('applyForm');
+    const message = document.getElementById('applyMessage');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = "Sending…";
+      const data = new FormData(form);
+      try {
+        const res = await fetch("https://formsubmit.co/ajax/info@alphaequityiq.com", {
+          method: "POST", headers: { "Accept": "application/json" }, body: data
+        });
+        if (res.ok) { message.innerHTML = '<span style="color:#8dd58b;font-weight:600;">✅ Thank you — your application was sent successfully!</span>'; form.reset(); }
+        else { message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>'; }
+      } catch {
+        message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to info@alphaequityiq.com.</span>';
+      }
+    });
+
+    // WebGL: subtle rotating gold wireframe sphere (graceful fail if WebGL unavailable)
+    (function(){
+      const canvas = document.getElementById('alphaWebGL');
+      if (!canvas || !window.THREE) return;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, window.innerWidth / 500, 0.1, 1000);
+      camera.position.z = 8;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+      function sizeHero(){
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        const rect = hero.getBoundingClientRect();
+        renderer.setSize(rect.width, rect.height, false);
+        renderer.domElement.style.width = rect.width + 'px';
+        renderer.domElement.style.height = rect.height + 'px';
+        renderer.domElement.style.top = '0px';
+        renderer.domElement.style.left = '0px';
+        camera.aspect = rect.width / rect.height;
+        camera.updateProjectionMatrix();
+      }
+      sizeHero(); window.addEventListener('resize', sizeHero);
+
+      const geo = new THREE.SphereGeometry(2.6, 32, 32);
+      const mat = new THREE.MeshBasicMaterial({ color: 0xd4af37, wireframe:true, transparent:true, opacity:0.15 });
+      const sphere = new THREE.Mesh(geo, mat); scene.add(sphere);
+
+      const geo2 = new THREE.IcosahedronGeometry(3.4, 1);
+      const mat2 = new THREE.LineBasicMaterial({ color: 0xf5c84c, transparent:true, opacity:0.07 });
+      const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo2), mat2);
+      scene.add(wire);
+
+      let raf;
+      function animate(){
+        raf = requestAnimationFrame(animate);
+        sphere.rotation.y += 0.0015; sphere.rotation.x += 0.0008;
+        wire.rotation.y -= 0.0009; wire.rotation.x += 0.0005;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      const heroEl = document.querySelector('.hero');
+      const heroIO = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if (!e.isIntersecting){ cancelAnimationFrame(raf); }
+          else { animate(); }
+        });
+      }, {threshold:0});
+      if (heroEl) heroIO.observe(heroEl);
+    })();
+
+    // Page-wide floating/bouncing Greeks (α, θ, Γ, ν) across the full document
+    (function(){
+      const symbols = ['α','θ','Γ','ν','α','θ','Γ','ν'];
+      const container = document.getElementById('floatGreeks');
+      if (!container) return;
+
+      // Helpers for full-page dimensions
+      const docW = () => Math.max(
+        document.documentElement.clientWidth,
+        document.documentElement.scrollWidth
+      );
+      const docH = () => Math.max(
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight
+      );
+
+      // Ensure container always spans the full document
+      function sizeContainer(){
+        container.style.height = docH() + 'px';
+        container.style.width  = docW() + 'px';
+      }
+      sizeContainer();
+      window.addEventListener('resize', sizeContainer);
+      const ro = new ResizeObserver(sizeContainer);
+      ro.observe(document.documentElement);
+
+      // Create items
+      const items = symbols.map((s)=>{
+        const el = document.createElement('span');
+        el.textContent = s;
+        container.appendChild(el);
+
+        const w = docW(), h = docH();
+        const x = Math.random() * (w - 40) + 20;
+        const y = Math.random() * (h - 40) + 20;
+
+        const speed = 0.18 + Math.random()*0.35; // px per frame
+        const angle = Math.random()*Math.PI*2;
+
+        const size = 24 + Math.random()*36;
+        el.style.fontSize = size + 'px';
+        el.style.opacity  = (0.04 + Math.random()*0.03).toFixed(2);
+
+        return { el, x, y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed };
+      });
+
+      // Animate across full document
+      function tick(){
+        const w = docW(), h = docH();
+        const pad = 20;
+
+        for (const it of items){
+          it.x += it.vx;
+          it.y += it.vy;
+
+          // Bounce off edges
+          if (it.x < pad || it.x > w - pad){ it.vx *= -1; it.x = Math.max(pad, Math.min(w - pad, it.x)); }
+          if (it.y < pad || it.y > h - pad){ it.vy *= -1; it.y = Math.max(pad, Math.min(h - pad, it.y)); }
+
+          it.el.style.transform = `translate(${it.x}px, ${it.y}px)`;
+        }
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+  </script>
+</body>
+</html>
