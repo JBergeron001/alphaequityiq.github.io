@@ -27,7 +27,6 @@
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;background:linear-gradient(135deg,var(--bg-1),var(--bg-2) 60%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
     h1,h2{font-family:Manrope,Inter,Arial,sans-serif}
-
     a{color:var(--gold-2);text-decoration:none}
     a:hover{text-decoration:underline}
 
@@ -102,7 +101,7 @@
     .tagline{color:var(--gold-2);font-weight:700;letter-spacing:.2px;margin:0 0 22px}
     .sub{color:var(--muted)}
 
-    /* Rotating Greek symbols */
+    /* Rotating Greek symbols (hero backdrop) */
     .greek{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.06;
       display:flex;align-items:center;justify-content:center;gap:6vw;font-family:Manrope,Inter,sans-serif;font-weight:700;
       font-size:clamp(48px,10vw,120px)}
@@ -180,6 +179,17 @@
     .markets label{display:inline-flex;align-items:center;gap:6px}
     .hint{font-size:12px;color:var(--muted)}
 
+    /* Floating Greeks (page-wide, subtle) */
+    .float-greeks{
+      position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.07;
+      font-family:Manrope,Inter,sans-serif; font-weight:700;
+    }
+    .float-greeks span{
+      position:absolute; font-size:clamp(24px, 6vw, 60px); user-select:none;
+      filter: saturate(0.9);
+      will-change: transform;
+    }
+
     /* Footer: gold grid horizon */
     footer{
       position:relative;text-align:center;color:var(--muted);border-top:1px solid #1c2230;
@@ -216,6 +226,9 @@
     background:radial-gradient(circle,rgba(245,200,76,.12),transparent 70%);
     pointer-events:none;mix-blend-mode:screen;z-index:1;transform:translate(-9999px,-9999px);"></div>
 
+  <!-- Page-wide floating Greek symbols (α, θ, Γ, ν) -->
+  <div class="float-greeks" aria-hidden="true" id="floatGreeks"></div>
+
   <header>
     <div class="brand">
       <img src="/logo.png" alt="Alpha Equity IQ logo">
@@ -233,7 +246,7 @@
     <!-- WebGL canvas -->
     <canvas id="alphaWebGL" aria-hidden="true"></canvas>
 
-    <!-- Greek overlay -->
+    <!-- Greek overlay (hero backdrop) -->
     <div class="greek" aria-hidden="true"><span>α</span><span>Δ</span><span>σ</span></div>
 
     <div class="container hero-inner">
@@ -371,7 +384,7 @@
     <div class="container">
       <h2 class="reveal">Contact</h2>
       <p class="muted reveal">
-        Email: <a href="mailto:jay@alphaequityiq.com">jay@alphaequityiq.com</a><br>
+        Email: <a href="mailto:info@alphaequityiq.com">info@alphaequityiq.com</a><br>
         Region: Midwest (US)
       </p>
     </div>
@@ -417,15 +430,15 @@
 
     // Hero parallax (crest + Greek symbols)
     const crest = document.querySelector('.hero-logo-wrap');
-    const greek = document.querySelector('.greek');
+    const greekBackdrop = document.querySelector('.greek');
     document.addEventListener('mousemove', e=>{
       const x = (e.clientX / window.innerWidth - 0.5) * 20;
       const y = (e.clientY / window.innerHeight - 0.5) * 20;
       if (crest) crest.style.transform = `translate(${x/4}px, ${y/4}px)`;
-      if (greek) greek.style.transform = `translate(${x/10}px, ${y/10}px)`;
+      if (greekBackdrop) greekBackdrop.style.transform = `translate(${x/10}px, ${y/10}px)`;
     }, {passive:true});
 
-    // Form (FormSubmit AJAX)
+    // Form (FormSubmit AJAX) -> UPDATED to info@alphaequityiq.com
     const form = document.getElementById('applyForm');
     const message = document.getElementById('applyMessage');
     form.addEventListener('submit', async (e) => {
@@ -433,13 +446,13 @@
       message.textContent = "Sending…";
       const data = new FormData(form);
       try {
-        const res = await fetch("https://formsubmit.co/ajax/jay@alphaequityiq.com", {
+        const res = await fetch("https://formsubmit.co/ajax/info@alphaequityiq.com", {
           method: "POST", headers: { "Accept": "application/json" }, body: data
         });
         if (res.ok) { message.innerHTML = '<span style="color:#8dd58b;font-weight:600;">✅ Thank you — your application was sent successfully!</span>'; form.reset(); }
         else { message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>'; }
       } catch {
-        message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to jay@alphaequityiq.com.</span>';
+        message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to info@alphaequityiq.com.</span>';
       }
     });
 
@@ -470,7 +483,6 @@
       const mat = new THREE.MeshBasicMaterial({ color: 0xd4af37, wireframe:true, transparent:true, opacity:0.15 });
       const sphere = new THREE.Mesh(geo, mat); scene.add(sphere);
 
-      // faint grid lines
       const geo2 = new THREE.IcosahedronGeometry(3.4, 1);
       const mat2 = new THREE.LineBasicMaterial({ color: 0xf5c84c, transparent:true, opacity:0.07 });
       const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo2), mat2);
@@ -485,7 +497,6 @@
       }
       animate();
 
-      // Pause rendering when hero offscreen to save CPU
       const heroEl = document.querySelector('.hero');
       const heroIO = new IntersectionObserver((entries)=>{
         entries.forEach(e=>{
@@ -494,6 +505,65 @@
         });
       }, {threshold:0});
       if (heroEl) heroIO.observe(heroEl);
+    })();
+
+    // NEW: Page-wide floating/bouncing Greeks (α, θ, Γ, ν for Vega)
+    (function(){
+      const symbols = ['α','θ','Γ','ν','α','θ','Γ','ν'];
+      const container = document.getElementById('floatGreeks');
+      if (!container) return;
+
+      const W = ()=>window.innerWidth, H = ()=>window.innerHeight;
+
+      const items = symbols.map((s, i)=>{
+        const el = document.createElement('span');
+        el.textContent = s;
+        el.style.left = Math.random()*W() + 'px';
+        el.style.top  = Math.random()*H() + 'px';
+        el.style.opacity = 0.05 + Math.random()*0.03; // very subtle
+        container.appendChild(el);
+
+        // random gentle velocity
+        const speed = 0.2 + Math.random()*0.4; // px per frame
+        const angle = Math.random()*Math.PI*2;
+        return {
+          el,
+          x: el.offsetLeft,
+          y: el.offsetTop,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed,
+          size: 24 + Math.random()*36
+        };
+      });
+
+      // size responsiveness
+      items.forEach(it=>{ it.el.style.fontSize = it.size+'px'; });
+
+      function tick(){
+        const w = W(), h = H();
+        for (const it of items){
+          it.x += it.vx;
+          it.y += it.vy;
+
+          // bounce off edges with padding
+          const pad = 20;
+          if (it.x < pad || it.x > w - pad){ it.vx *= -1; it.x = Math.max(pad, Math.min(w - pad, it.x)); }
+          if (it.y < pad || it.y > h - pad){ it.vy *= -1; it.y = Math.max(pad, Math.min(h - pad, it.y)); }
+
+          it.el.style.transform = `translate(${it.x}px, ${it.y}px)`;
+        }
+        requestAnimationFrame(tick);
+      }
+      tick();
+
+      // keep positions in-bounds on resize
+      window.addEventListener('resize', ()=>{
+        const w = W(), h = H();
+        items.forEach(it=>{
+          it.x = Math.min(it.x, w-20);
+          it.y = Math.min(it.y, h-20);
+        });
+      });
     })();
   </script>
 </body>
