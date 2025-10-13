@@ -17,15 +17,12 @@
   <meta property="og:type" content="website" />
 
   <style>
-    :root {
+    :root{
       --bg-1:#050709; --bg-2:#111827;
-      --panel:#0f141c;
-      --muted:#a8b0bd;
-      --text:#e9ecf2;
-      --gold:#d4af37; --gold-2:#f5c84c;
+      --panel:#0f141c; --muted:#a8b0bd; --text:#e9ecf2;
+      --gold:#d4af37; --gold-2:#f5c84c; --border:#1e2737;
       --radius:16px; --shadow:0 12px 30px rgba(0,0,0,.45);
       --glass:rgba(15,20,28,.65);
-      --border:#1e2737;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;background:linear-gradient(135deg,var(--bg-1),var(--bg-2) 60%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
@@ -34,67 +31,70 @@
     a{color:var(--gold-2);text-decoration:none}
     a:hover{text-decoration:underline}
 
-    /* Scroll progress (top gold line) */
+    /* Scroll progress */
     #progressBar{
-      position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold-2),var(--gold));
-      z-index:9999;box-shadow:0 0 12px rgba(245,200,76,.65);
+      position:fixed;top:0;left:0;height:2px;width:0;
+      background:linear-gradient(90deg,var(--gold-2),var(--gold));
+      box-shadow:0 0 12px rgba(245,200,76,.65);
+      z-index:9999;
     }
 
-    /* Data particles background (very subtle) */
+    /* Ambient particles */
     body::after{
-      content:""; position:fixed; inset:-10% -10% -10% -10%; z-index:-2; pointer-events:none;
+      content:"";position:fixed;inset:-10%;z-index:-3;pointer-events:none;
       background:
         radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.06), transparent 60%),
         radial-gradient(2px 2px at 70% 60%, rgba(255,255,255,.05), transparent 60%),
         radial-gradient(2px 2px at 35% 80%, rgba(255,255,255,.04), transparent 60%),
         radial-gradient(1px 1px at 80% 25%, rgba(255,255,255,.05), transparent 60%),
         radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,.04), transparent 60%);
-      animation: drift 60s linear infinite;
-      opacity:.25;
+      animation: drift 60s linear infinite; opacity:.25;
     }
-    @keyframes drift {
-      0% { transform: translate3d(0,0,0) }
-      50% { transform: translate3d(-2%, -2%, 0) }
-      100%{ transform: translate3d(0,0,0) }
-    }
+    @keyframes drift{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(-2%,-2%,0)}100%{transform:translate3d(0,0,0)}}
 
     /* Header */
     header{
-      position:sticky;top:0;z-index:50;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 5%;
-      background:rgba(11,14,20,.72);
-      border-bottom:1px solid #1c2230;
-      backdrop-filter:blur(10px);
+      position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+      padding:12px 5%;background:rgba(11,14,20,.72);border-bottom:1px solid #1c2230;backdrop-filter:blur(10px)
     }
     .brand{display:flex;align-items:center;gap:12px}
     .brand img{height:42px;width:auto;display:block}
-    nav a{margin-left:18px;color:var(--text);opacity:.9}
+    nav a{margin-left:18px;color:var(--text);opacity:.9;position:relative}
     nav a:hover{color:var(--gold)}
-    /* gentle glint on nav hover */
-    nav a{position:relative}
     nav a::after{
-      content:""; position:absolute; inset:0 0 -2px 0; height:2px; background:linear-gradient(90deg,transparent,var(--gold-2),transparent);
-      opacity:0; transform:translateX(-30%); transition:all .25s ease;
+      content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold-2),transparent);
+      opacity:0;transform:translateX(-30%);transition:all .25s ease;
     }
-    nav a:hover::after{opacity:.7; transform:translateX(0)}
+    nav a:hover::after{opacity:.7;transform:translateX(0)}
 
     /* Hero */
     .hero{
       position:relative;overflow:hidden;padding:90px 0 60px;min-height:60vh;isolation:isolate;
-      background:
-        radial-gradient(800px 350px at 50% 20%, rgba(212,175,55,.10), transparent 60%),
-        transparent;
+      background:radial-gradient(800px 350px at 50% 20%, rgba(212,175,55,.10), transparent 60%), transparent;
     }
-    /* large faint crest */
+    /* Alpha Pulse + crest */
     .hero::before{
-      content:"";position:absolute;inset:0;background:url("/logo.png") no-repeat center;
-      background-size:clamp(420px,70vw,900px);opacity:.07;filter:saturate(1.1);z-index:-1
+      content:"";position:absolute;inset:0;z-index:-2;
+      background-image:
+        url("/logo.png"),
+        repeating-linear-gradient(90deg, rgba(245,200,76,.05) 0 2px, transparent 2px 4px);
+      background-repeat:no-repeat, repeat;
+      background-position:center, top left;
+      background-size:clamp(420px,70vw,900px), 200px 100%;
+      opacity:.9;
+      animation: alphaPulse 12s linear infinite;
+      filter:saturate(1.05) opacity(.07);
     }
-    /* spotlight mask */
-    .hero::after{
-      content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 10%, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 70%, rgba(0,0,0,.65) 100%);z-index:-1
+    @keyframes alphaPulse{from{background-position:center,0 0}to{background-position:center,200px 0}}
+    /* Spotlight mask */
+    .hero::after{content:"";position:absolute;inset:0;z-index:-1;
+      background:radial-gradient(120% 90% at 50% 10%, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 70%, rgba(0,0,0,.65) 100%);
     }
+
+    /* WebGL canvas sits behind hero content */
+    #alphaWebGL{position:absolute;inset:0;z-index:-2;pointer-events:none}
+
     .container{width:min(1100px,92%);margin:0 auto}
     .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
 
@@ -102,120 +102,101 @@
     .tagline{color:var(--gold-2);font-weight:700;letter-spacing:.2px;margin:0 0 22px}
     .sub{color:var(--muted)}
 
-    /* rotating faint Greek symbols behind hero text */
-    .greek{
-      position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.06;
+    /* Rotating Greek symbols */
+    .greek{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.06;
       display:flex;align-items:center;justify-content:center;gap:6vw;font-family:Manrope,Inter,sans-serif;font-weight:700;
-      font-size:clamp(48px,10vw,120px);
-    }
-    .greek span{animation:spin 40s linear infinite; display:inline-block}
+      font-size:clamp(48px,10vw,120px)}
+    .greek span{animation:spin 40s linear infinite;display:inline-block}
     .greek span:nth-child(2){animation-duration:55s;opacity:.8}
     .greek span:nth-child(3){animation-duration:70s;opacity:.6}
-    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-    .hero-logo-wrap{position:relative;display:inline-block;max-width:260px;width:45%;min-width:180px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.55))}
+    .hero-logo-wrap{position:relative;display:inline-block;max-width:260px;width:45%;min-width:180px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.55)); will-change:transform}
     .hero-logo{display:block;width:100%;height:auto}
     .hero-logo-wrap::after{
-      content:"";position:absolute;inset:0;
-      background:linear-gradient(115deg, transparent 0%, rgba(255,255,255,.28) 45%, transparent 55%);
+      content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.28) 45%,transparent 55%);
       mix-blend-mode:screen;transform:translateX(-120%);pointer-events:none;animation:logoShimmer 30s linear infinite
     }
     @keyframes logoShimmer{0%{transform:translateX(-120%);opacity:0}6%{transform:translateX(120%);opacity:1}7%{transform:translateX(120%);opacity:0}100%{transform:translateX(120%);opacity:0}}
 
     .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
     .btn{
-      background:linear-gradient(135deg,var(--gold-2),var(--gold));
-      color:#111;border:none;padding:11px 22px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);
-      transform:translateY(0); transition:transform .18s ease, filter .18s ease;
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#111;border:none;
+      padding:11px 22px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);
+      transform:translateY(0);transition:transform .18s ease,filter .18s ease
     }
-    .btn:hover{filter:brightness(1.08); transform:translateY(-1px)}
+    .btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
 
     section{padding:54px 0}
     h2{color:var(--gold-2);margin:0 0 14px}
     .muted{color:var(--muted)}
 
-    /* Glass cards with blur */
+    /* Glass cards + 3D hover tilt */
     .card{
-      background:var(--glass);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      backdrop-filter: blur(8px);
+      background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:22px;backdrop-filter:blur(8px);transform-style:preserve-3d;transition:transform .4s ease, box-shadow .4s ease;
+      will-change:transform;
     }
+    .card:hover{transform:rotateY(3deg) translateY(-3px); box-shadow:0 12px 40px rgba(245,200,76,0.15)}
 
-    /* Gold underline utility */
-    .gold-underline{
-      background-image:linear-gradient(to right, rgba(245,200,76,.7), rgba(212,175,55,.7));
-      background-repeat:no-repeat;background-size:100% 0.12em;background-position:0 100%;
-      padding-bottom:.04em;transition:background-size .3s ease
-    }
+    /* Gold underline */
+    .gold-underline{background-image:linear-gradient(to right, rgba(245,200,76,.7), rgba(212,175,55,.7));
+      background-repeat:no-repeat;background-size:100% 0.12em;background-position:0 100%;padding-bottom:.04em;transition:background-size .3s ease}
     .gold-underline:hover{background-size:100% 0.22em}
 
-    /* Subtle gold text glint (headings/tagline) */
+    /* Heading glint */
     .glint{position:relative;display:inline-block}
     .glint::after{
       content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.28) 45%,transparent 55%);
-      mix-blend-mode:screen;transform:translateX(-120%);
-      animation:textGlint 20s linear infinite;
+      mix-blend-mode:screen;transform:translateX(-120%);animation:textGlint 20s linear infinite
     }
     @keyframes textGlint{0%{transform:translateX(-120%);opacity:0}10%{transform:translateX(120%);opacity:1}11%{opacity:0}100%{transform:translateX(120%);opacity:0}}
 
-    /* Fade-up on scroll */
+    /* Reveal on scroll */
     .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease}
     .reveal.in{opacity:1;transform:none}
 
-    /* Apply form */
+    /* Form with floating labels */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .form-grid-full{grid-column:1 / -1}
     .field{position:relative}
     .field input,.field select,.field textarea{
       width:100%;padding:14px 12px 12px;border-radius:12px;border:1px solid #2b3446;background:#0a0f18;color:var(--text);
-      transition: box-shadow .15s ease, border-color .15s ease;
+      transition:box-shadow .15s ease,border-color .15s ease
     }
     .field textarea{min-height:110px;resize:vertical}
-    .field input:focus,.field select:focus,.field textarea:focus{
-      outline:none;border-color:rgba(212,175,55,.5); box-shadow:0 0 0 2px rgba(212,175,55,.25);
-    }
-    /* floating labels */
-    .field label{
-      position:absolute;left:12px;top:10px;color:#96a0b0;font-size:13px;pointer-events:none;
-      transform-origin:left top;transition:all .15s ease;background:transparent;padding:0 4px;
-    }
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:rgba(212,175,55,.5);box-shadow:0 0 0 2px rgba(212,175,55,.25)}
+    .field label{position:absolute;left:12px;top:10px;color:#96a0b0;font-size:13px;pointer-events:none;transform-origin:left top;transition:all .15s ease;background:transparent;padding:0 4px}
+    .field input::placeholder,.field textarea::placeholder{opacity:0}
     .field input:focus + label,
     .field input:not(:placeholder-shown) + label,
     .field select:focus + label,
     .field textarea:focus + label,
     .field textarea:not(:placeholder-shown) + label{
-      top:-9px; left:10px; font-size:11px; color:var(--gold-2); background:linear-gradient(135deg,var(--bg-1),var(--bg-2)); border-radius:4px;
+      top:-9px;left:10px;font-size:11px;color:var(--gold-2);
+      background:linear-gradient(135deg,var(--bg-1),var(--bg-2));border-radius:4px;
     }
-    /* helper for placeholder-shown behavior */
-    .field input::placeholder,.field textarea::placeholder{opacity:0}
-
     .markets{display:flex;gap:12px;flex-wrap:wrap}
     .markets label{display:inline-flex;align-items:center;gap:6px}
     .hint{font-size:12px;color:var(--muted)}
 
-    /* Footer with animated skyline shimmer */
+    /* Footer: gold grid horizon */
     footer{
-      position:relative;text-align:center;color:var(--muted);
-      border-top:1px solid #1c2230;padding:70px 0 30px;margin-top:60px;font-size:14px;line-height:1.6;overflow:hidden
+      position:relative;text-align:center;color:var(--muted);border-top:1px solid #1c2230;
+      padding:70px 0 30px;margin-top:60px;font-size:14px;line-height:1.6;overflow:hidden
     }
     footer::before{
-      content:"";position:absolute;bottom:0;left:0;width:200%;height:140px;background:
-        linear-gradient(0deg, rgba(212,175,55,0.12), transparent 80%),
-        repeating-linear-gradient(to right, rgba(230,200,90,0.05) 0px, rgba(230,200,90,0.05) 20px, rgba(0,0,0,0.2) 40px);
-      clip-path:polygon(0% 100%,0% 70%,5% 72%,10% 60%,13% 65%,18% 58%,22% 63%,27% 55%,31% 65%,37% 57%,43% 70%,48% 62%,53% 66%,59% 60%,64% 72%,70% 65%,75% 75%,82% 66%,89% 74%,94% 62%,100% 70%,100% 100%);
-      animation:skylineMove 25s linear infinite;opacity:.25
+      content:"";position:absolute;left:0;right:0;bottom:0;height:140px;opacity:.25;
+      background:
+        linear-gradient(0deg, rgba(212,175,55,0.12), transparent 70%),
+        repeating-linear-gradient(to right, rgba(230,200,90,0.06) 0 1px, transparent 1px 24px),
+        repeating-linear-gradient(to top, rgba(230,200,90,0.05) 0 1px, transparent 1px 16px);
+      mask:linear-gradient(to top, black 0%, black 60%, transparent 100%);
+      animation:gridSweep 25s linear infinite;
     }
-    footer::after{
-      content:"";position:absolute;bottom:0;left:-150%;width:400%;height:140px;background:linear-gradient(120deg,transparent,rgba(245,200,76,.2),transparent);
-      clip-path:polygon(0% 100%,0% 70%,5% 72%,10% 60%,13% 65%,18% 58%,22% 63%,27% 55%,31% 65%,37% 57%,43% 70%,48% 62%,53% 66%,59% 60%,64% 72%,70% 65%,75% 75%,82% 66%,89% 74%,94% 62%,100% 70%,100% 100%);
-      animation:skylineShimmer 25s linear infinite;opacity:.18;mix-blend-mode:screen
-    }
-    @keyframes skylineMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    @keyframes skylineShimmer{0%{transform:translateX(-100%);opacity:0}15%{transform:translateX(100%);opacity:.18}16%{opacity:0}100%{transform:translateX(100%);opacity:0}}
+    @keyframes gridSweep{0%{background-position:0 0,0 0,0 0}100%{background-position:0 0,400px 0,0 -140px}}
 
+    /* Responsive */
     @media (max-width:900px){
       .hero-inner{grid-template-columns:1fr}
       .hero{padding-top:64px}
@@ -227,7 +208,13 @@
   </style>
 </head>
 <body>
+  <!-- Scroll progress -->
   <div id="progressBar"></div>
+
+  <!-- Soft gold glow that follows cursor -->
+  <div id="glow" style="position:fixed;width:300px;height:300px;border-radius:50%;
+    background:radial-gradient(circle,rgba(245,200,76,.12),transparent 70%);
+    pointer-events:none;mix-blend-mode:screen;z-index:1;transform:translate(-9999px,-9999px);"></div>
 
   <header>
     <div class="brand">
@@ -243,6 +230,10 @@
   </header>
 
   <section class="hero">
+    <!-- WebGL canvas -->
+    <canvas id="alphaWebGL" aria-hidden="true"></canvas>
+
+    <!-- Greek overlay -->
     <div class="greek" aria-hidden="true"><span>α</span><span>Δ</span><span>σ</span></div>
 
     <div class="container hero-inner">
@@ -396,6 +387,9 @@
     United States
   </footer>
 
+  <!-- Three.js (WebGL accent) -->
+  <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
+
   <script>
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -403,45 +397,104 @@
     // Scroll progress bar
     const bar = document.getElementById('progressBar');
     function updateBar(){
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const p = docHeight ? (scrollTop / docHeight) * 100 : 0;
-      bar.style.width = p + '%';
+      const st = window.scrollY || document.documentElement.scrollTop;
+      const dh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      bar.style.width = (dh ? (st/dh)*100 : 0) + '%';
     }
-    window.addEventListener('scroll', updateBar); updateBar();
+    window.addEventListener('scroll', updateBar, {passive:true}); updateBar();
 
     // Reveal on scroll
-    const revealEls = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
     }, {threshold:.08});
-    revealEls.forEach(el => io.observe(el));
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-    // Inline form submit with green success message (FormSubmit)
+    // Cursor glow
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', e=>{
+      glow.style.transform = `translate(${e.clientX-150}px, ${e.clientY-150}px)`;
+    }, {passive:true});
+
+    // Hero parallax (crest + Greek symbols)
+    const crest = document.querySelector('.hero-logo-wrap');
+    const greek = document.querySelector('.greek');
+    document.addEventListener('mousemove', e=>{
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      if (crest) crest.style.transform = `translate(${x/4}px, ${y/4}px)`;
+      if (greek) greek.style.transform = `translate(${x/10}px, ${y/10}px)`;
+    }, {passive:true});
+
+    // Form (FormSubmit AJAX)
     const form = document.getElementById('applyForm');
     const message = document.getElementById('applyMessage');
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       message.textContent = "Sending…";
       const data = new FormData(form);
-
       try {
         const res = await fetch("https://formsubmit.co/ajax/jay@alphaequityiq.com", {
-          method: "POST",
-          headers: { "Accept": "application/json" },
-          body: data
+          method: "POST", headers: { "Accept": "application/json" }, body: data
         });
-        if (res.ok) {
-          message.innerHTML = '<span style="color:#8dd58b;font-weight:600;">✅ Thank you — your application was sent successfully!</span>';
-          form.reset();
-        } else {
-          message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>';
-        }
+        if (res.ok) { message.innerHTML = '<span style="color:#8dd58b;font-weight:600;">✅ Thank you — your application was sent successfully!</span>'; form.reset(); }
+        else { message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>'; }
       } catch {
         message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to jay@alphaequityiq.com.</span>';
       }
     });
+
+    // WebGL: subtle rotating gold wireframe sphere (graceful fail if WebGL unavailable)
+    (function(){
+      const canvas = document.getElementById('alphaWebGL');
+      if (!canvas || !window.THREE) return;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, window.innerWidth / 500, 0.1, 1000);
+      camera.position.z = 8;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+      function sizeHero(){
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        const rect = hero.getBoundingClientRect();
+        renderer.setSize(rect.width, rect.height, false);
+        renderer.domElement.style.width = rect.width + 'px';
+        renderer.domElement.style.height = rect.height + 'px';
+        renderer.domElement.style.top = '0px';
+        renderer.domElement.style.left = '0px';
+        camera.aspect = rect.width / rect.height;
+        camera.updateProjectionMatrix();
+      }
+      sizeHero(); window.addEventListener('resize', sizeHero);
+
+      const geo = new THREE.SphereGeometry(2.6, 32, 32);
+      const mat = new THREE.MeshBasicMaterial({ color: 0xd4af37, wireframe:true, transparent:true, opacity:0.15 });
+      const sphere = new THREE.Mesh(geo, mat); scene.add(sphere);
+
+      // faint grid lines
+      const geo2 = new THREE.IcosahedronGeometry(3.4, 1);
+      const mat2 = new THREE.LineBasicMaterial({ color: 0xf5c84c, transparent:true, opacity:0.07 });
+      const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo2), mat2);
+      scene.add(wire);
+
+      let raf;
+      function animate(){
+        raf = requestAnimationFrame(animate);
+        sphere.rotation.y += 0.0015; sphere.rotation.x += 0.0008;
+        wire.rotation.y -= 0.0009; wire.rotation.x += 0.0005;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Pause rendering when hero offscreen to save CPU
+      const heroEl = document.querySelector('.hero');
+      const heroIO = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if (!e.isIntersecting){ cancelAnimationFrame(raf); }
+          else { animate(); }
+        });
+      }, {threshold:0});
+      if (heroEl) heroIO.observe(heroEl);
+    })();
   </script>
 </body>
 </html>
