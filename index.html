@@ -110,20 +110,17 @@
     .muted { color: var(--muted) }
     .card { background: linear-gradient(180deg,#0e131c,#0b1018); border: 1px solid #1e2737; border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px }
 
-    .highlight {
-      position: relative; overflow: hidden; border: 1px solid rgba(212,175,55,.25);
-      background: radial-gradient(circle at 12% 0%, rgba(212,175,55,.12), rgba(11,14,20,1) 70%);
-      box-shadow: var(--shadow);
+    /* Gold underline utility */
+    .gold-underline {
+      background-image: linear-gradient(to right, rgba(245,200,76,.7), rgba(212,175,55,.7));
+      background-repeat: no-repeat;
+      background-size: 100% 0.12em;
+      background-position: 0 100%;
+      padding-bottom: 0.04em;
+      transition: background-size .3s ease;
     }
-    .highlight::before {
-      content: ""; position: absolute; top: 0; left: -50%; width: 200%; height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(245,200,76,.08), transparent);
-      animation: glowSlide 9s linear infinite;
-    }
-    @keyframes glowSlide {
-      0% { transform: translateX(-100%) }
-      50% { transform: translateX(0) }
-      100% { transform: translateX(100%) }
+    .gold-underline:hover {
+      background-size: 100% 0.22em;
     }
 
     /* Apply form styles */
@@ -138,8 +135,6 @@
     .markets { display: flex; gap: 12px; flex-wrap: wrap }
     .markets label { display: inline-flex; align-items: center; gap: 6px }
     .hint { font-size: 12px; color: var(--muted) }
-    .success { color: #8dd58b }
-    .error { color: #ffb3b3 }
 
     /* Footer with animated skyline shimmer */
     footer {
@@ -231,8 +226,11 @@
       <div class="card">
         <h2 style="margin-top:0;color:var(--gold)">Selective by Design</h2>
         <p class="muted">
-          We admit clients whose temperament matches our edge: patient, rules-based, and accountable. If you want signals without work, this isn’t for you.
-          If you want mastery, welcome. Minimum account size guidance available during screening. We are an educational program; we do not manage client funds.
+          We admit clients whose temperament matches our edge: patient, rules-based, and accountable.
+          If you want signals without work, this isn’t for you. If you want mastery, welcome.
+          Minimum account size guidance available during screening.
+          We are an educational program; we do not manage client funds.
+          <br><strong>We teach you to maximize your own capital for <span class="gold-underline">Maximum ALPHA</span>.</strong>
         </p>
       </div>
     </div>
@@ -253,29 +251,14 @@
     </div>
   </section>
 
-  <section id="accept">
-    <div class="container highlight" style="padding:22px;">
-      <h2>Who We Accept</h2>
-      <ul class="muted">
-        <li>Individuals who value <strong>process over outcome</strong> and consistency over luck.</li>
-        <li>Those capable of <strong>patience, focus, and composure</strong> under pressure.</li>
-        <li>Applicants who maintain <strong>emotional neutrality</strong> when managing risk.</li>
-        <li>Professionals seeking <strong>quantitative systems and structured decision-making</strong>.</li>
-      </ul>
-      <p class="muted" style="margin-top:10px">We don’t mold personalities — we identify the right ones and refine their edge.</p>
-    </div>
-  </section>
-
-  <!-- APPLY (INLINE FORM) -->
+  <!-- APPLY SECTION -->
   <section id="apply">
     <div class="container">
       <div class="card">
         <h2>Apply to Alpha Equity IQ</h2>
         <p class="muted">Complete the form below. We’ll contact qualified applicants to schedule screening.</p>
 
-        <!-- Inline form (AJAX to FormSubmit) -->
         <form id="applyForm">
-          <!-- FormSubmit hidden fields -->
           <input type="hidden" name="_subject" value="Alpha Equity IQ — New Application" />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_captcha" value="true" />
@@ -334,9 +317,6 @@
           <div id="applyMessage" class="hint" style="margin-top:10px;"></div>
         </form>
       </div>
-
-      <!-- Anchor for future use -->
-      <div id="apply-thanks" style="margin-top:24px;"></div>
     </div>
   </section>
 
@@ -352,6 +332,9 @@
 
   <footer>
     © <span id="year"></span> Alpha Equity IQ • Learn like a Quant. Trade like a Pro.<br>
+    <span style="display:inline-block;margin-top:10px;color:#a8b0bd;">
+      <em>Alpha Equity IQ does not provide investment advice or specific trade recommendations (stocks, futures, forex, or crypto). We teach process and risk discipline so you can make your own decisions and maximize alpha.</em>
+    </span><br><br>
     605 N Michigan Ave, 4th Floor #2<br>
     Chicago, IL 60611<br>
     United States
@@ -384,7 +367,7 @@
         } else {
           message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>';
         }
-      } catch (err) {
+      } catch {
         message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to jay@alphaequityiq.com.</span>';
       }
     });
