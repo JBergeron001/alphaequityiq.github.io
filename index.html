@@ -126,6 +126,21 @@
       100% { transform: translateX(100%) }
     }
 
+    /* Apply form styles */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px }
+    .form-grid-full { grid-column: 1 / -1 }
+    label { font-size: 13px; color: var(--muted) }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid #2b3446; background: #0a0f18; color: var(--text);
+    }
+    textarea { min-height: 90px; resize: vertical }
+    .markets { display: flex; gap: 12px; flex-wrap: wrap }
+    .markets label { display: inline-flex; align-items: center; gap: 6px }
+    .hint { font-size: 12px; color: var(--muted) }
+    .success { color: #8dd58b }
+    .error { color: #ffb3b3 }
+
     /* Footer with animated skyline shimmer */
     footer {
       position: relative;
@@ -176,6 +191,7 @@
       .hero-logo-wrap { margin: 0 auto 12px }
       nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center }
       nav a { margin-left: 0 }
+      .form-grid { grid-template-columns: 1fr }
     }
   </style>
 </head>
@@ -250,16 +266,77 @@
     </div>
   </section>
 
+  <!-- APPLY (INLINE FORM) -->
   <section id="apply">
     <div class="container">
       <div class="card">
         <h2>Apply to Alpha Equity IQ</h2>
-        <p class="muted">
-          We accept a limited number of disciplined applicants who demonstrate patience, focus, and a willingness to follow process.
-          If your personality reflects consistency and composure under pressure, we invite you to apply for our next training cycle.
-        </p>
-        <a class="btn" href="mailto:jay@alphaequityiq.com">Submit Your Application</a>
+        <p class="muted">Complete the form below. We’ll contact qualified applicants to schedule screening.</p>
+
+        <!-- Inline form (AJAX to FormSubmit) -->
+        <form id="applyForm">
+          <!-- FormSubmit hidden fields -->
+          <input type="hidden" name="_subject" value="Alpha Equity IQ — New Application" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="true" />
+          <input type="text" name="_honey" style="display:none">
+
+          <div class="form-grid">
+            <div>
+              <label>First Name</label>
+              <input name="First Name" required />
+            </div>
+            <div>
+              <label>Last Name</label>
+              <input name="Last Name" required />
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input type="email" name="Email" required />
+            </div>
+            <div>
+              <label>Phone</label>
+              <input type="tel" name="Phone" />
+            </div>
+
+            <div>
+              <label>Familiarity with Trading</label>
+              <select name="Familiarity" required>
+                <option value="" disabled selected>Select one…</option>
+                <option>Minimal</option>
+                <option>Some</option>
+                <option>Many years</option>
+                <option>Almost expert</option>
+              </select>
+            </div>
+
+            <div class="form-grid-full">
+              <label>Desired Market(s)</label>
+              <div class="markets">
+                <label><input type="checkbox" name="Markets" value="Futures" /> Futures</label>
+                <label><input type="checkbox" name="Markets" value="Stocks" /> Stocks</label>
+                <label><input type="checkbox" name="Markets" value="Cryptos" /> Cryptos</label>
+                <label><input type="checkbox" name="Markets" value="Forex" /> Forex</label>
+              </div>
+            </div>
+
+            <div class="form-grid-full">
+              <label>Notes (optional)</label>
+              <textarea name="Notes" placeholder="Goals, capital, constraints, trading schedule, etc."></textarea>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:16px;">
+            <button type="submit" class="btn">Send Application</button>
+          </div>
+
+          <div id="applyMessage" class="hint" style="margin-top:10px;"></div>
+        </form>
       </div>
+
+      <!-- Anchor for future use -->
+      <div id="apply-thanks" style="margin-top:24px;"></div>
     </div>
   </section>
 
@@ -281,7 +358,36 @@
   </footer>
 
   <script>
+    // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Inline form submit with green success message
+    const form = document.getElementById('applyForm');
+    const message = document.getElementById('applyMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = "Sending…";
+
+      const data = new FormData(form);
+
+      try {
+        const res = await fetch("https://formsubmit.co/ajax/jay@alphaequityiq.com", {
+          method: "POST",
+          headers: { "Accept": "application/json" },
+          body: data
+        });
+
+        if (res.ok) {
+          message.innerHTML = '<span style="color:#8dd58b;font-weight:600;">✅ Thank you — your application was sent successfully!</span>';
+          form.reset();
+        } else {
+          message.innerHTML = '<span style="color:#ffb3b3;">❌ There was a problem sending your application. Please try again later.</span>';
+        }
+      } catch (err) {
+        message.innerHTML = '<span style="color:#ffb3b3;">❌ Network error — please try again or email directly to jay@alphaequityiq.com.</span>';
+      }
+    });
   </script>
 </body>
 </html>
